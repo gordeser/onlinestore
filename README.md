@@ -4,7 +4,7 @@
 
 The project is online store where users can order products and leave comments on products' pages.
 
-# Conceptual model
+## Conceptual model
 
 ![diagram](asserts/diagram.png)
 

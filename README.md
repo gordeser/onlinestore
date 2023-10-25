@@ -16,6 +16,6 @@ The project is online store where users can order products and leave comments on
 - **Product comments**: Users can leave comments to products and read comments from other users
 - **Product and order management**: Administrators have access to edit products' information, add new products, remove comments and process orders 
 
-# Complex query
+## Complex query
 
 - **Select products with a certain category**: `SELECT id_product FROM Product WHERE category='some_category'`

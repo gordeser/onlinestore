@@ -18,5 +18,4 @@ The project is online store where users can order products and leave comments on
 
 # Complex query
 
-- Select products with a certain category
-
+- **Select products with a certain category**: `SELECT id_product FROM Product WHERE category='some_category'`

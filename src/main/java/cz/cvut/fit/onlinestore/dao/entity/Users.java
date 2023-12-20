@@ -1,6 +1,8 @@
 package cz.cvut.fit.onlinestore.dao.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -8,6 +10,8 @@ import java.util.Set;
 // Users because 'user' is reserved word in sql
 @Entity
 @Table(name = "users")
+@Getter
+@Setter
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

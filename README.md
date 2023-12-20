@@ -10,11 +10,7 @@ The project is online store where users can order products and leave comments on
 
 ## Business operation
 
-- **User registration and authentication**: Users can create accounts, log in and edit their information
-- **Adding products to cart**: Users can add products to a cart
-- **Order placement and tracking**: Users can place orders and track their status
-- **Product comments**: Users can leave comments to products and read comments from other users
-- **Product and order management**: Administrators have access to edit products' information, add new products, remove comments and process orders 
+- **Order placement**: Users can place orders and track their status. User can place an order only if the sum of goods is not less than 300 CZK and not more than 100,000 CZK
 
 ## Complex query
 

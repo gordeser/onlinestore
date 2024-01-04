@@ -3,6 +3,8 @@ package cz.cvut.fit.onlinestore.controller;
 import cz.cvut.fit.onlinestore.dao.dto.OrderDescriptionDTO;
 import cz.cvut.fit.onlinestore.dao.entity.Orders;
 import cz.cvut.fit.onlinestore.service.OrdersService;
+import cz.cvut.fit.onlinestore.service.exceptions.TotalAmountOutOfRangeException;
+import cz.cvut.fit.onlinestore.service.exceptions.UserWithThatEmailDoesNotExistException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,6 +23,12 @@ public class OrdersController {
         try {
             Orders newOrder = ordersService.createOrder(orderDescription);
             return ResponseEntity.ok(newOrder);
+        } catch (TotalAmountOutOfRangeException e) {
+            System.out.println("ERROR: " + e);
+            return ResponseEntity.badRequest().build();
+        } catch (UserWithThatEmailDoesNotExistException e) {
+            System.out.println("ERROR: " + e);
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
             System.out.println("ERROR: " + e);
             return ResponseEntity.internalServerError().build();

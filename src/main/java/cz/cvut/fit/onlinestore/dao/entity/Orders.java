@@ -26,11 +26,8 @@ public class Orders {
     @ManyToOne
     @JoinColumn(name = "id_users")
     private Users orderedUsers;
-    @ManyToMany
-    @JoinTable(name = "product_orders",
-            joinColumns = @JoinColumn(referencedColumnName = "id_orders"),
-            inverseJoinColumns = @JoinColumn(referencedColumnName = "id_product"))
-    private Set<Product> products = new HashSet<>();
+    @ManyToMany(mappedBy = "orders")
+    private Set<Product> products;
     @Column(columnDefinition = "CLOB")
     private String productsQuantities;
 }

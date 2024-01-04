@@ -21,7 +21,7 @@ public class Orders {
     @CreationTimestamp
     private LocalDateTime date;
     @Enumerated(EnumType.STRING)
-    private OrderStatus status;
+    private OrderStatus status = OrderStatus.PENDING;
     @ManyToOne
     @JoinColumn(name = "id_users")
     private Users orderedUsers;

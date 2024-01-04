@@ -5,6 +5,7 @@ import cz.cvut.fit.onlinestore.dao.dto.UsersSignupDTO;
 import cz.cvut.fit.onlinestore.dao.entity.Users;
 import cz.cvut.fit.onlinestore.service.UsersService;
 import cz.cvut.fit.onlinestore.service.exceptions.UserWithThatEmailDoesNotExistException;
+import cz.cvut.fit.onlinestore.service.exceptions.WrongPasswordException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,16 +17,14 @@ public class UsersController {
     private final UsersService usersService;
 
     @PostMapping("/api/login")
-    public ResponseEntity<?> getUserUsingCredentials(@RequestBody UsersLoginDTO userLogin) {
+    public ResponseEntity<Users> getUserUsingCredentials(@RequestBody UsersLoginDTO userLogin) {
         try {
             Users user = usersService.authUser(userLogin);
-            if (user != null) {
-                return ResponseEntity.ok().body(user);
-            } else {
-                return ResponseEntity.badRequest().body("Invalid credentials");
-            }
+            return ResponseEntity.ok(user);
+        } catch (UserWithThatEmailDoesNotExistException | WrongPasswordException e) {
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("An error occurred");
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -35,7 +34,7 @@ public class UsersController {
             Users user = usersService.signupUser(userSignup);
             return ResponseEntity.ok(user);
         } catch (UserWithThatEmailDoesNotExistException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }

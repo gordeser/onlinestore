@@ -28,4 +28,18 @@ public class ProductService {
                 ))
                 .collect(Collectors.toList());
     }
+
+    public List<ProductDescriptionDTO> getAllProductsWithCategory(String category) {
+        List<Tuple> products = productRepository.getAllProductsWithCategory(category);
+        return products.stream()
+                .map(product -> new ProductDescriptionDTO(
+                        product.get(0, Long.class),
+                        product.get(1, String.class),
+                        product.get(2, String.class),
+                        product.get(3, Double.class),
+                        product.get(4, String.class),
+                        product.get(5, String.class)
+                ))
+                .collect(Collectors.toList());
+    }
 }

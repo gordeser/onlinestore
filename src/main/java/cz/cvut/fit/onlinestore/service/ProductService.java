@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,5 +42,22 @@ public class ProductService {
                         product.get(5, String.class)
                 ))
                 .collect(Collectors.toList());
+    }
+
+    public Optional<ProductDescriptionDTO> getProductById(Long id) {
+        Optional<Tuple> productTuple = productRepository.getProductById(id);
+
+        if (productTuple.isPresent()) {
+            Tuple tuple = productTuple.get();
+            String name = tuple.get(0, String.class);
+            String description = tuple.get(1, String.class);
+            Double price = tuple.get(2, Double.class);
+            String category = tuple.get(3, String.class);
+            String image = tuple.get(4, String.class);
+
+            return Optional.of(new ProductDescriptionDTO(id, name, description, price, category, image));
+        }
+
+        return Optional.empty();
     }
 }

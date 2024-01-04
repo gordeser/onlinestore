@@ -3,6 +3,7 @@ package cz.cvut.fit.onlinestore.dao.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 public class Comment {
     @Id
     @Column(name = "id_comment")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
     @JoinColumn(name = "id_users")
@@ -21,5 +23,6 @@ public class Comment {
     @JoinColumn(name = "id_product")
     private Product product;
     private String text;
+    @CreationTimestamp
     private LocalDateTime date;
 }

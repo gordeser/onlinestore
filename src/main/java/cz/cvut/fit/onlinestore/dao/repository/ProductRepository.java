@@ -11,4 +11,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("select p.id, p.name, p.description, p.price, p.category, p.image from Product p")
     List<Tuple> getAllProducts();
+
+    @Query("select p.id, p.name, p.description, p.price, p.category, p.image from Product p where p.category = :category")
+    List<Tuple> getAllProductsWithCategory(String category);
 }

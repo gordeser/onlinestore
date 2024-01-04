@@ -5,7 +5,8 @@ import cz.cvut.fit.onlinestore.dao.dto.CommentDescriptionDTO;
 import cz.cvut.fit.onlinestore.dao.dto.ProductDescriptionDTO;
 import cz.cvut.fit.onlinestore.service.CommentService;
 import cz.cvut.fit.onlinestore.service.ProductService;
-import cz.cvut.fit.onlinestore.service.exceptions.UserWithThatEmailDoesNotExistsException;
+import cz.cvut.fit.onlinestore.service.exceptions.ProductWithThatIdDoesNotExistException;
+import cz.cvut.fit.onlinestore.service.exceptions.UserWithThatEmailDoesNotExistException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +38,7 @@ public class CommentController {
         try {
             CommentDescriptionDTO commentCreated = commentService.addCommentByProductId(id, comment);
             return ResponseEntity.ok(commentCreated);
-        } catch (UserWithThatEmailDoesNotExistsException e) {
+        } catch (UserWithThatEmailDoesNotExistException | ProductWithThatIdDoesNotExistException e) {
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();

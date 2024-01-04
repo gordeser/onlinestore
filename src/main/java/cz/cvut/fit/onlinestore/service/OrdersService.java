@@ -10,6 +10,8 @@ import cz.cvut.fit.onlinestore.dao.entity.Users;
 import cz.cvut.fit.onlinestore.dao.repository.OrdersRepository;
 import cz.cvut.fit.onlinestore.dao.repository.ProductRepository;
 import cz.cvut.fit.onlinestore.dao.repository.UsersRepository;
+import cz.cvut.fit.onlinestore.service.exceptions.ProductWithThatIdDoesNotExistException;
+import cz.cvut.fit.onlinestore.service.exceptions.UserWithThatEmailDoesNotExistException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,26 +29,23 @@ public class OrdersService {
 
     public Orders createOrder(OrderDescriptionDTO orderDescription) {
         Optional<Users> user = usersRepository.findByEmail(orderDescription.userEmail());
-
         if (user.isEmpty()) {
-            throw new RuntimeException("User does not exists with that email");
-        } else {
-            Orders newOrder = new Orders();
-
-            newOrder.setOrderedUsers(user.get());
-
-            Set<Product> productSet = orderDescription.orderProducts().stream()
-                    .map(productCount -> productRepository.findById(productCount.id())
-                            .orElseThrow(() -> new RuntimeException("Product is not found: " + productCount.id())))
-                    .collect(Collectors.toSet());
-
-            newOrder.setProducts(productSet);
-
-            String quantitiesJson = convertProductCountListToJson(orderDescription.orderProducts());
-            newOrder.setProductsQuantities(quantitiesJson);
-
-            return ordersRepository.save(newOrder);
+            throw new UserWithThatEmailDoesNotExistException();
         }
+
+        Set<Product> productSet = orderDescription.orderProducts().stream()
+                .map(productCount -> productRepository.findById(productCount.id())
+                        .orElseThrow(ProductWithThatIdDoesNotExistException::new))
+                .collect(Collectors.toSet());
+
+
+        String quantitiesJson = convertProductCountListToJson(orderDescription.orderProducts());
+
+        Orders newOrder = new Orders();
+        newOrder.setOrderedUsers(user.get());
+        newOrder.setProducts(productSet);
+        newOrder.setProductsQuantities(quantitiesJson);
+        return ordersRepository.save(newOrder);
     }
 
     private String convertProductCountListToJson(List<ProductCountDTO> productCounts) {

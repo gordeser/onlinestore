@@ -16,7 +16,7 @@ public class UsersService {
     private final UsersRepository repository;
 
     public Users authUser(UsersLoginDTO userLogin) {
-        Optional<Users> user = repository.findUserByEmail(userLogin.email());
+        Optional<Users> user = repository.findByEmail(userLogin.email());
 
         if (user.isPresent() && user.get().getPassword().equals(userLogin.password())) {
             return user.get();
@@ -27,7 +27,7 @@ public class UsersService {
 
     @Modifying
     public boolean signupUser(UsersSignupDTO userSignup) {
-        if (repository.findUserByEmail(userSignup.email()).isPresent()) {
+        if (repository.findByEmail(userSignup.email()).isPresent()) {
             return false;
         }
 

@@ -27,8 +27,10 @@ public class ProductController {
             ProductDescriptionDTO product = productService.getProductById(id);
             return ResponseEntity.ok(product);
         } catch (ProductWithThatIdDoesNotExistException e) {
+            System.out.println("ERROR: " + e);
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
+            System.out.println("ERROR: " + e);
             return ResponseEntity.internalServerError().build();
         }
     }

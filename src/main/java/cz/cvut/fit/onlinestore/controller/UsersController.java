@@ -22,8 +22,10 @@ public class UsersController {
             Users user = usersService.authUser(userLogin);
             return ResponseEntity.ok(user);
         } catch (UserWithThatEmailDoesNotExistException | WrongPasswordException e) {
+            System.out.println("ERROR: " + e);
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
+            System.out.println("ERROR: " + e);
             return ResponseEntity.badRequest().build();
         }
     }
@@ -34,8 +36,10 @@ public class UsersController {
             Users user = usersService.signupUser(userSignup);
             return ResponseEntity.ok(user);
         } catch (UserWithThatEmailDoesNotExistException e) {
+            System.out.println("ERROR: " + e);
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {
+            System.out.println("ERROR: " + e);
             return ResponseEntity.internalServerError().build();
         }
     }

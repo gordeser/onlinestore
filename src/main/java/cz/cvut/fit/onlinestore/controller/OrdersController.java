@@ -17,12 +17,13 @@ public class OrdersController {
     private final OrdersService ordersService;
 
     @PostMapping("/api/orders")
-    public ResponseEntity<?> createOrder(@RequestBody OrderDescriptionDTO orderDescription) {
+    public ResponseEntity<Orders> createOrder(@RequestBody OrderDescriptionDTO orderDescription) {
         try {
             Orders newOrder = ordersService.createOrder(orderDescription);
             return ResponseEntity.ok(newOrder);
-        } catch (RuntimeException e) {
-            return ResponseEntity.internalServerError().body(e);
+        } catch (Exception e) {
+            System.out.println("ERROR: " + e);
+            return ResponseEntity.internalServerError().build();
         }
     }
 }

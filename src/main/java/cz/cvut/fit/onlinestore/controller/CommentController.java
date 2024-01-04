@@ -23,8 +23,10 @@ public class CommentController {
             List<CommentDescriptionDTO> comments = commentService.getCommentsByProductId(id);
             return ResponseEntity.ok(comments);
         } catch (ProductWithThatIdDoesNotExistException e) {
+            System.out.println("ERROR: " + e);
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {
+            System.out.println("ERROR: " + e);
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -35,8 +37,10 @@ public class CommentController {
             CommentDescriptionDTO commentCreated = commentService.addCommentByProductId(id, comment);
             return ResponseEntity.ok(commentCreated);
         } catch (UserWithThatEmailDoesNotExistException | ProductWithThatIdDoesNotExistException e) {
+            System.out.println("ERROR: " + e);
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {
+            System.out.println("ERROR: " + e);
             return ResponseEntity.internalServerError().build();
         }
     }

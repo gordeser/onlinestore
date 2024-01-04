@@ -3,6 +3,7 @@ package cz.cvut.fit.onlinestore.dao.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -17,6 +18,7 @@ public class Orders {
     @Id
     @Column(name = "id_orders")
     private Long id;
+    @CreationTimestamp
     private LocalDateTime date;
     @Enumerated(EnumType.STRING)
     private OrderStatus status;

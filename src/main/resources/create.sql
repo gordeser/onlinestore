@@ -20,6 +20,7 @@ CREATE TABLE orders (
                         id_users BIGINT NOT NULL,
                         date TIMESTAMP NOT NULL,
                         status VARCHAR(256) NOT NULL
+                        status VARCHAR(256) NOT NULL DEFAULT 'PENDING' check (status IN ('PENDING', 'DELIVERING', 'DELIVERED', 'CANCELLED'))
 );
 ALTER TABLE orders ADD CONSTRAINT pk_orders PRIMARY KEY (id_orders);
 
@@ -27,7 +28,7 @@ CREATE TABLE product (
                          id_product SERIAL NOT NULL,
                          name VARCHAR(256) NOT NULL,
                          description VARCHAR(256) NOT NULL,
-                         price DOUBLE PRECISION NOT NULL,
+                         price DOUBLE PRECISION NOT NULL check (price >= 0.0),
                          category VARCHAR(256) NOT NULL,
                          image VARCHAR(256) NOT NULL
 );

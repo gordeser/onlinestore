@@ -30,4 +30,6 @@ public class Orders {
             joinColumns = @JoinColumn(referencedColumnName = "id_orders"),
             inverseJoinColumns = @JoinColumn(referencedColumnName = "id_product"))
     private Set<Product> products = new HashSet<>();
+    @Column(columnDefinition = "CLOB")
+    private String productsQuantities;
 }

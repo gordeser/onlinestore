@@ -9,7 +9,8 @@ import cz.cvut.fit.onlinestore.dao.entity.Users;
 import cz.cvut.fit.onlinestore.dao.repository.CommentRepository;
 import cz.cvut.fit.onlinestore.dao.repository.ProductRepository;
 import cz.cvut.fit.onlinestore.dao.repository.UsersRepository;
-import cz.cvut.fit.onlinestore.service.exceptions.UserWithThatEmailDoesNotExistsException;
+import cz.cvut.fit.onlinestore.service.exceptions.ProductWithThatIdDoesNotExistException;
+import cz.cvut.fit.onlinestore.service.exceptions.UserWithThatEmailDoesNotExistException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
@@ -47,23 +48,28 @@ public class CommentService {
         Optional<Users> user = usersRepository.findByEmail(comment.email());
         Optional<Product> product = productRepository.findById(id);
 
-        if (user.isPresent() && product.isPresent()) {
-            Comment newComment = new Comment();
-            newComment.setProduct(product.get());
-            newComment.setText(comment.text());
-            newComment.setUsers(user.get());
-            commentRepository.save(newComment);
+        if (user.isEmpty()) {
+            throw new UserWithThatEmailDoesNotExistException();
+        }
 
-            return new CommentDescriptionDTO(
-                    newComment.getId(),
-                    newComment.getText(),
-                    newComment.getDate(),
-                    new UsersCommentDTO(
-                            newComment.getUsers().getName(),
-                            newComment.getUsers().getSurname(),
-                            newComment.getUsers().getEmail()));
-        } else {
-            throw new UserWithThatEmailDoesNotExistsException();
+        if (product.isEmpty()) {
+            throw new ProductWithThatIdDoesNotExistException();
+        }
+
+        Comment newComment = new Comment();
+        newComment.setProduct(product.get());
+        newComment.setText(comment.text());
+        newComment.setUsers(user.get());
+        commentRepository.save(newComment);
+
+        return new CommentDescriptionDTO(
+                newComment.getId(),
+                newComment.getText(),
+                newComment.getDate(),
+                new UsersCommentDTO(
+                        newComment.getUsers().getName(),
+                        newComment.getUsers().getSurname(),
+                        newComment.getUsers().getEmail()));
         }
     }
 }

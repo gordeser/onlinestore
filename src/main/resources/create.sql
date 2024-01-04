@@ -11,15 +11,14 @@ CREATE TABLE comment (
                          id_users BIGINT NOT NULL,
                          id_comment SERIAL NOT NULL ,
                          text TEXT NOT NULL,
-                         date TIMESTAMP NOT NULL default CURRENT_TIMESTAMP
+                         date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 ALTER TABLE comment ADD CONSTRAINT pk_comment PRIMARY KEY (id_comment);
 
 CREATE TABLE orders (
                         id_orders SERIAL NOT NULL,
                         id_users BIGINT NOT NULL,
-                        date TIMESTAMP NOT NULL,
-                        status VARCHAR(256) NOT NULL
+                        date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                         status VARCHAR(256) NOT NULL DEFAULT 'PENDING' check (status IN ('PENDING', 'DELIVERING', 'DELIVERED', 'CANCELLED'))
 );
 ALTER TABLE orders ADD CONSTRAINT pk_orders PRIMARY KEY (id_orders);

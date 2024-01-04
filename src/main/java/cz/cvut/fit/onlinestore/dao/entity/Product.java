@@ -20,6 +20,7 @@ public class Product {
     private String description;
     private double price;
     private String category;
+    private String image;
     @OneToMany(mappedBy = "product")
     private Set<Comment> comments = new HashSet<>();
     @ManyToMany

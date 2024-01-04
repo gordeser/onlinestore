@@ -1,5 +1,6 @@
 package cz.cvut.fit.onlinestore.dao.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,5 +24,6 @@ public class Users {
     private String email;
     private String password;
     @OneToMany(mappedBy = "orderedUsers")
+    @JsonIgnore // todo DTO
     private Set<Orders> orders = new HashSet<>();
 }

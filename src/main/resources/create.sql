@@ -45,15 +45,15 @@ CREATE TABLE users (
 ALTER TABLE users ADD CONSTRAINT pk_users PRIMARY KEY (id_users);
 
 CREATE TABLE product_orders (
-                                products_id_product BIGINT NOT NULL,
+                                product_id_product BIGINT NOT NULL,
                                 orders_id_orders BIGINT NOT NULL
 );
-ALTER TABLE product_orders ADD CONSTRAINT pk_product_orders PRIMARY KEY (products_id_product, orders_id_orders);
+ALTER TABLE product_orders ADD CONSTRAINT pk_product_orders PRIMARY KEY (product_id_product, orders_id_orders);
 
 ALTER TABLE comment ADD CONSTRAINT fk_comment_product FOREIGN KEY (id_product) REFERENCES product (id_product) ON DELETE CASCADE;
 ALTER TABLE comment ADD CONSTRAINT fk_comment_users FOREIGN KEY (id_users) REFERENCES users (id_users) ON DELETE CASCADE;
 
 ALTER TABLE orders ADD CONSTRAINT fk_orders_users FOREIGN KEY (id_users) REFERENCES users (id_users) ON DELETE CASCADE;
 
-ALTER TABLE product_orders ADD CONSTRAINT fk_product_orders_product FOREIGN KEY (products_id_product) REFERENCES product (id_product) ON DELETE CASCADE;
+ALTER TABLE product_orders ADD CONSTRAINT fk_product_orders_product FOREIGN KEY (product_id_product) REFERENCES product (id_product) ON DELETE CASCADE;
 ALTER TABLE product_orders ADD CONSTRAINT fk_product_orders_orders FOREIGN KEY (orders_id_orders) REFERENCES orders (id_orders) ON DELETE CASCADE;

@@ -1,7 +1,9 @@
 package cz.cvut.fit.onlinestore.controller;
 
+import cz.cvut.fit.onlinestore.dao.dto.CommentAddDTO;
 import cz.cvut.fit.onlinestore.dao.dto.CommentDescriptionDTO;
 import cz.cvut.fit.onlinestore.dao.dto.ProductDescriptionDTO;
+import cz.cvut.fit.onlinestore.dao.entity.Comment;
 import cz.cvut.fit.onlinestore.service.CommentService;
 import cz.cvut.fit.onlinestore.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,16 @@ public class CommentController {
             return ResponseEntity.ok(comments);
         } else {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("/api/products/{id}/comments")
+    public ResponseEntity<?> addCommentByProductId(@PathVariable Long id, @RequestBody CommentAddDTO comment) {
+        Optional<CommentDescriptionDTO> commentCreated = commentService.addCommentByProductId(id, comment);
+        if (commentCreated.isPresent()) {
+            return ResponseEntity.ok(commentCreated.get());
+        } else {
+            return ResponseEntity.badRequest().body("Some error occurred during adding comment");
         }
     }
 }

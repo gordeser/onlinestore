@@ -16,14 +16,8 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping("/api/products")
-    public List<ProductDescriptionDTO> getAllProducts(
-            @RequestParam(value = "category", required = false) String category
-    ) {
-        if (category != null && !category.isEmpty()) {
-            return productService.getAllProductsWithCategory(category);
-        } else {
-            return productService.getAllProducts();
-        }
+    public List<ProductDescriptionDTO> getAllProducts(@RequestParam(value = "category", required = false) String category) {
+        return productService.getAllProducts(category);
     }
 
     @GetMapping("/api/products/{id}")

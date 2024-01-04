@@ -38,7 +38,6 @@ public class OrdersService {
                         .orElseThrow(ProductWithThatIdDoesNotExistException::new))
                 .collect(Collectors.toSet());
 
-
         String quantitiesJson = convertProductCountListToJson(orderDescription.orderProducts());
 
         Orders newOrder = new Orders();

@@ -5,6 +5,7 @@ import cz.cvut.fit.onlinestore.dao.dto.CommentDescriptionDTO;
 import cz.cvut.fit.onlinestore.dao.dto.ProductDescriptionDTO;
 import cz.cvut.fit.onlinestore.service.CommentService;
 import cz.cvut.fit.onlinestore.service.ProductService;
+import cz.cvut.fit.onlinestore.service.exceptions.UserWithThatEmailDoesNotExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,12 +33,14 @@ public class CommentController {
     }
 
     @PostMapping("/api/products/{id}/comments")
-    public ResponseEntity<?> addCommentByProductId(@PathVariable Long id, @RequestBody CommentAddDTO comment) {
-        Optional<CommentDescriptionDTO> commentCreated = commentService.addCommentByProductId(id, comment);
-        if (commentCreated.isPresent()) {
-            return ResponseEntity.ok(commentCreated.get());
-        } else {
-            return ResponseEntity.badRequest().body("Some error occurred during adding comment");
+    public ResponseEntity<CommentDescriptionDTO> addCommentByProductId(@PathVariable Long id, @RequestBody CommentAddDTO comment) {
+        try {
+            CommentDescriptionDTO commentCreated = commentService.addCommentByProductId(id, comment);
+            return ResponseEntity.ok(commentCreated);
+        } catch (UserWithThatEmailDoesNotExistsException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
 }

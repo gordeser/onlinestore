@@ -17,6 +17,7 @@ import java.util.Set;
 public class Orders {
     @Id
     @Column(name = "id_orders")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @CreationTimestamp
     private LocalDateTime date;

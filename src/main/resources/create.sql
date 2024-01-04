@@ -19,7 +19,8 @@ CREATE TABLE orders (
                         id_orders SERIAL NOT NULL,
                         id_users BIGINT NOT NULL,
                         date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                        status VARCHAR(256) NOT NULL DEFAULT 'PENDING' check (status IN ('PENDING', 'DELIVERING', 'DELIVERED', 'CANCELLED'))
+                        status VARCHAR(256) NOT NULL DEFAULT 'PENDING' check (status IN ('PENDING', 'DELIVERING', 'DELIVERED', 'CANCELLED')),
+                        products_quantities TEXT NOT NULL DEFAULT '{}'
 );
 ALTER TABLE orders ADD CONSTRAINT pk_orders PRIMARY KEY (id_orders);
 
@@ -45,6 +46,7 @@ ALTER TABLE users ADD CONSTRAINT pk_users PRIMARY KEY (id_users);
 
 CREATE TABLE product_orders (
                                 products_id_product BIGINT NOT NULL,
+                                orders_id_orders BIGINT NOT NULL
 );
 ALTER TABLE product_orders ADD CONSTRAINT pk_product_orders PRIMARY KEY (products_id_product, orders_id_orders);
 

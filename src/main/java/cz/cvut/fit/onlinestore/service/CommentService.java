@@ -70,6 +70,6 @@ public class CommentService {
                         newComment.getUsers().getName(),
                         newComment.getUsers().getSurname(),
                         newComment.getUsers().getEmail()));
-        }
+        
     }
 }

@@ -19,8 +19,8 @@ public class Users {
     private Long id;
     private String name;
     private String surname;
-    private String email;
     private String address;
+    private String email;
     private String password;
     @OneToMany(mappedBy = "orderedUsers")
     private Set<Orders> orders = new HashSet<>();

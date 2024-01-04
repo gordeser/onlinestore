@@ -4,6 +4,9 @@ import cz.cvut.fit.onlinestore.dao.dto.UsersLoginDTO;
 import cz.cvut.fit.onlinestore.dao.dto.UsersSignupDTO;
 import cz.cvut.fit.onlinestore.dao.entity.Users;
 import cz.cvut.fit.onlinestore.dao.repository.UsersRepository;
+import cz.cvut.fit.onlinestore.service.exceptions.UserWithThatEmailDoesNotExistException;
+import cz.cvut.fit.onlinestore.service.exceptions.UserWithThatEmailIsAlreadySignedUpException;
+import cz.cvut.fit.onlinestore.service.exceptions.WrongPasswordException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
@@ -13,22 +16,26 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class UsersService {
-    private final UsersRepository repository;
+    private final UsersRepository usersRepository;
 
     public Users authUser(UsersLoginDTO userLogin) {
-        Optional<Users> user = repository.findByEmail(userLogin.email());
+        Optional<Users> user = usersRepository.findByEmail(userLogin.email());
 
-        if (user.isPresent() && user.get().getPassword().equals(userLogin.password())) {
-            return user.get();
+        if (user.isEmpty()) {
+            throw new UserWithThatEmailDoesNotExistException();
         }
 
-        return null;
+        if (!user.get().getPassword().equals(userLogin.password())) {
+            throw new WrongPasswordException();
+        }
+
+        return user.get();
     }
 
     @Modifying
-    public boolean signupUser(UsersSignupDTO userSignup) {
-        if (repository.findByEmail(userSignup.email()).isPresent()) {
-            return false;
+    public Users signupUser(UsersSignupDTO userSignup) {
+        if (usersRepository.findByEmail(userSignup.email()).isPresent()) {
+            throw new UserWithThatEmailIsAlreadySignedUpException();
         }
 
         Users newUser = new Users();
@@ -38,7 +45,6 @@ public class UsersService {
         newUser.setEmail(userSignup.email());
         newUser.setPassword(userSignup.password());
 
-        repository.save(newUser);
-        return true;
+        return usersRepository.save(newUser);
     }
 }

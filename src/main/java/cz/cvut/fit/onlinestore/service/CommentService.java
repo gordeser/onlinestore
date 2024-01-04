@@ -27,6 +27,12 @@ public class CommentService {
     private final ProductRepository productRepository;
 
     public List<CommentDescriptionDTO> getCommentsByProductId(Long id) {
+        Optional<Product> product = productRepository.findById(id);
+
+        if (product.isEmpty()) {
+            throw new ProductWithThatIdDoesNotExistException();
+        }
+
         List<Comment> comments = commentRepository.getAllCommentsByProductId(id);
 
         return comments.stream()
@@ -70,6 +76,6 @@ public class CommentService {
                         newComment.getUsers().getName(),
                         newComment.getUsers().getSurname(),
                         newComment.getUsers().getEmail()));
-        
+
     }
 }

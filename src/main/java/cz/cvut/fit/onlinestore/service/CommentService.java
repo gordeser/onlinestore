@@ -9,6 +9,7 @@ import cz.cvut.fit.onlinestore.dao.entity.Users;
 import cz.cvut.fit.onlinestore.dao.repository.CommentRepository;
 import cz.cvut.fit.onlinestore.dao.repository.ProductRepository;
 import cz.cvut.fit.onlinestore.dao.repository.UsersRepository;
+import cz.cvut.fit.onlinestore.service.exceptions.UserWithThatEmailDoesNotExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
@@ -42,7 +43,7 @@ public class CommentService {
     }
 
     @Modifying
-    public Optional<CommentDescriptionDTO> addCommentByProductId(Long id, CommentAddDTO comment) {
+    public CommentDescriptionDTO addCommentByProductId(Long id, CommentAddDTO comment) {
         Optional<Users> user = usersRepository.findByEmail(comment.email());
         Optional<Product> product = productRepository.findById(id);
 
@@ -53,19 +54,16 @@ public class CommentService {
             newComment.setUsers(user.get());
             commentRepository.save(newComment);
 
-            return Optional.of(
-                    new CommentDescriptionDTO(
-                            newComment.getId(),
-                            newComment.getText(),
-                            newComment.getDate(),
-                            new UsersCommentDTO(
-                                    newComment.getUsers().getName(),
-                                    newComment.getUsers().getSurname(),
-                                    newComment.getUsers().getEmail()
-                            )
-                    ));
+            return new CommentDescriptionDTO(
+                    newComment.getId(),
+                    newComment.getText(),
+                    newComment.getDate(),
+                    new UsersCommentDTO(
+                            newComment.getUsers().getName(),
+                            newComment.getUsers().getSurname(),
+                            newComment.getUsers().getEmail()));
         } else {
-            return Optional.empty();
+            throw new UserWithThatEmailDoesNotExistsException();
         }
     }
 }

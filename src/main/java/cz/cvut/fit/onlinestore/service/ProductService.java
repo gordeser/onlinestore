@@ -2,6 +2,7 @@ package cz.cvut.fit.onlinestore.service;
 
 import cz.cvut.fit.onlinestore.dao.dto.ProductDescriptionDTO;
 import cz.cvut.fit.onlinestore.dao.repository.ProductRepository;
+import cz.cvut.fit.onlinestore.service.exceptions.ProductWithThatIdDoesNotExistException;
 import jakarta.persistence.Tuple;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -44,20 +45,19 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    public Optional<ProductDescriptionDTO> getProductById(Long id) {
-        Optional<Tuple> productTuple = productRepository.getProductById(id);
+    public ProductDescriptionDTO getProductById(Long id) {
+        Optional<Tuple> product = productRepository.getProductById(id);
 
-        if (productTuple.isPresent()) {
-            Tuple tuple = productTuple.get();
-            String name = tuple.get(0, String.class);
-            String description = tuple.get(1, String.class);
-            Double price = tuple.get(2, Double.class);
-            String category = tuple.get(3, String.class);
-            String image = tuple.get(4, String.class);
-
-            return Optional.of(new ProductDescriptionDTO(id, name, description, price, category, image));
+        if (product.isEmpty()) {
+            throw new ProductWithThatIdDoesNotExistException();
         }
 
-        return Optional.empty();
+        String name = product.get().get(0, String.class);
+        String description = product.get().get(1, String.class);
+        Double price = product.get().get(2, Double.class);
+        String category = product.get().get(3, String.class);
+        String image = product.get().get(4, String.class);
+
+        return new ProductDescriptionDTO(id, name, description, price, category, image);
     }
 }

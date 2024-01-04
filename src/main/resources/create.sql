@@ -45,8 +45,6 @@ ALTER TABLE users ADD CONSTRAINT pk_users PRIMARY KEY (id_users);
 
 CREATE TABLE product_orders (
                                 products_id_product BIGINT NOT NULL,
-                                orders_id_orders BIGINT NOT NULL,
-                                quantity INTEGER NOT NULL DEFAULT 0
 );
 ALTER TABLE product_orders ADD CONSTRAINT pk_product_orders PRIMARY KEY (products_id_product, orders_id_orders);
 

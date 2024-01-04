@@ -1,13 +1,12 @@
 package cz.cvut.fit.onlinestore.controller;
 
 import cz.cvut.fit.onlinestore.dao.dto.UsersLoginDTO;
+import cz.cvut.fit.onlinestore.dao.dto.UsersSignupDTO;
 import cz.cvut.fit.onlinestore.dao.entity.Users;
 import cz.cvut.fit.onlinestore.service.UsersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-// end.
 
 @RestController
 @RequiredArgsConstructor
@@ -26,6 +25,16 @@ public class UsersController {
             }
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("An error occurred");
+        }
+    }
+
+    @PostMapping("/api/signup")
+    public ResponseEntity<?> signupUser(@RequestBody UsersSignupDTO userSignup) {
+        boolean userCreated = usersService.signupUser(userSignup);
+        if (userCreated) {
+            return ResponseEntity.ok().body("User successfully signed up");
+        } else {
+            return ResponseEntity.badRequest().body("User with this email is already registered");
         }
     }
 }

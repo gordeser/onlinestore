@@ -4,6 +4,7 @@ import cz.cvut.fit.onlinestore.dao.dto.UsersLoginDTO;
 import cz.cvut.fit.onlinestore.dao.dto.UsersSignupDTO;
 import cz.cvut.fit.onlinestore.dao.entity.Users;
 import cz.cvut.fit.onlinestore.service.UsersService;
+import cz.cvut.fit.onlinestore.service.exceptions.UserWithThatEmailDoesNotExistException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,12 +30,14 @@ public class UsersController {
     }
 
     @PostMapping("/api/signup")
-    public ResponseEntity<?> signupUser(@RequestBody UsersSignupDTO userSignup) {
-        boolean userCreated = usersService.signupUser(userSignup);
-        if (userCreated) {
-            return ResponseEntity.ok().body("User successfully signed up");
-        } else {
-            return ResponseEntity.badRequest().body("User with this email is already registered");
+    public ResponseEntity<Users> signupUser(@RequestBody UsersSignupDTO userSignup) {
+        try {
+            Users user = usersService.signupUser(userSignup);
+            return ResponseEntity.ok(user);
+        } catch (UserWithThatEmailDoesNotExistException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
 }

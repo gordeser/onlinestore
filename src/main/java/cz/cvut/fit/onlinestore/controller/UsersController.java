@@ -26,7 +26,7 @@ public class UsersController {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
             System.out.println("ERROR: " + e);
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.internalServerError().build();
         }
     }
 

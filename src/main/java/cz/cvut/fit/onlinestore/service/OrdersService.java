@@ -12,7 +12,6 @@ import cz.cvut.fit.onlinestore.dao.repository.ProductRepository;
 import cz.cvut.fit.onlinestore.dao.repository.UsersRepository;
 import cz.cvut.fit.onlinestore.service.exceptions.OrderWithThatIdDoesNotExistException;
 import cz.cvut.fit.onlinestore.service.exceptions.ProductWithThatIdDoesNotExistException;
-import cz.cvut.fit.onlinestore.service.exceptions.TotalAmountOutOfRangeException;
 import cz.cvut.fit.onlinestore.service.exceptions.UserWithThatEmailDoesNotExistException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -41,7 +40,7 @@ public class OrdersService {
 
     public List<Orders> getUserOrders(String userEmail) {
         Optional<Users> user = usersRepository.findByEmail(userEmail);
-        
+
         if (user.isEmpty()) {
             throw new UserWithThatEmailDoesNotExistException();
         }
@@ -59,15 +58,6 @@ public class OrdersService {
                 .map(productCount -> productRepository.findById(productCount.id())
                         .orElseThrow(ProductWithThatIdDoesNotExistException::new))
                 .collect(Collectors.toSet());
-
-        double totalAmount = 0.0;
-        for (Product product : productSet) {
-            totalAmount += product.getPrice();
-        }
-
-        if (totalAmount < 300 || totalAmount > 100000) {
-            throw new TotalAmountOutOfRangeException();
-        }
 
         String quantitiesJson = convertProductCountListToJson(orderDescription.orderProducts());
 

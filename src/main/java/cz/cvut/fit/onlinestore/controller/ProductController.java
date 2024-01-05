@@ -33,6 +33,7 @@ public class ProductController {
         try {
             return ResponseEntity.ok(productService.getAllProducts(category));
         } catch (Exception e) {
+            System.out.println("ERROR: " + e);
             return ResponseEntity.internalServerError().build();
         }
     }

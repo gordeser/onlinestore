@@ -58,6 +58,7 @@ public class CommentController {
             CommentDescriptionDTO commentCreated = commentService.addCommentByProductId(id, comment);
             return ResponseEntity.ok(commentCreated);
         } catch (ProductWithThatIdDoesNotExistException e) {
+            System.out.println("ERROR: " + e);
             return ResponseEntity.notFound().build();
         } catch (UserWithThatEmailDoesNotExistException e) {
             System.out.println("ERROR: " + e);

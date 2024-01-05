@@ -10,6 +10,7 @@ import cz.cvut.fit.onlinestore.dao.entity.Users;
 import cz.cvut.fit.onlinestore.dao.repository.OrdersRepository;
 import cz.cvut.fit.onlinestore.dao.repository.ProductRepository;
 import cz.cvut.fit.onlinestore.dao.repository.UsersRepository;
+import cz.cvut.fit.onlinestore.service.exceptions.OrderWithThatIdDoesNotExistException;
 import cz.cvut.fit.onlinestore.service.exceptions.ProductWithThatIdDoesNotExistException;
 import cz.cvut.fit.onlinestore.service.exceptions.TotalAmountOutOfRangeException;
 import cz.cvut.fit.onlinestore.service.exceptions.UserWithThatEmailDoesNotExistException;
@@ -28,6 +29,15 @@ public class OrdersService {
     private final ProductRepository productRepository;
     private final UsersRepository usersRepository;
 
+    public Orders getOrderById(Long id) {
+        Optional<Orders> order = ordersRepository.getOrdersById(id);
+
+        if (order.isEmpty()) {
+            throw new OrderWithThatIdDoesNotExistException();
+        }
+
+        return order.get();
+    }
     public Orders createOrder(OrderDescriptionDTO orderDescription) {
         Optional<Users> user = usersRepository.findByEmail(orderDescription.userEmail());
         if (user.isEmpty()) {

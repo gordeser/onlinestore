@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:3000")
@@ -41,6 +43,19 @@ public class OrdersController {
         } catch (UserWithThatEmailDoesNotExistException e) {
             System.out.println("ERROR: " + e);
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            System.out.println("ERROR: " + e);
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+    @PostMapping("/api/orders")
+    public ResponseEntity<List<Orders>> getUserOrders(@RequestBody String userEmail) {
+        try {
+            List<Orders> userOrders = ordersService.getUserOrders(userEmail);
+            return ResponseEntity.ok(userOrders);
+        } catch (UserWithThatEmailDoesNotExistException e) {
+            System.out.println("ERROR: " + e);
+            return ResponseEntity.badRequest().build();
         } catch (Exception e) {
             System.out.println("ERROR: " + e);
             return ResponseEntity.internalServerError().build();

@@ -50,7 +50,7 @@ public class UsersController {
             @ApiResponse(responseCode = "400", description = "User with that email already exists", content = {@Content(schema = @Schema())}),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content(schema = @Schema())})
     })
-    @PostMapping("/api/users")
+    @PostMapping("/api/users/signup")
     public ResponseEntity<Users> signupUser(@RequestBody UsersSignupDTO userSignup) {
         try {
             Users user = usersService.signupUser(userSignup);

@@ -18,7 +18,7 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     public List<ProductDescriptionDTO> getAllProducts(String category) {
-        List<Tuple> products = (category != null && category.isEmpty())
+        List<Tuple> products = (category != null && !category.isEmpty())
                 ? productRepository.getAllProductsWithCategory(category)
                 : productRepository.getAllProducts();
 

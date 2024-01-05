@@ -24,7 +24,7 @@ public class CommentController {
             return ResponseEntity.ok(comments);
         } catch (ProductWithThatIdDoesNotExistException e) {
             System.out.println("ERROR: " + e);
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
             System.out.println("ERROR: " + e);
             return ResponseEntity.internalServerError().build();
@@ -36,7 +36,9 @@ public class CommentController {
         try {
             CommentDescriptionDTO commentCreated = commentService.addCommentByProductId(id, comment);
             return ResponseEntity.ok(commentCreated);
-        } catch (UserWithThatEmailDoesNotExistException | ProductWithThatIdDoesNotExistException e) {
+        } catch (ProductWithThatIdDoesNotExistException e) {
+            return ResponseEntity.notFound().build();
+        } catch (UserWithThatEmailDoesNotExistException e) {
             System.out.println("ERROR: " + e);
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {

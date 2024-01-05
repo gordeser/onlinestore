@@ -3,7 +3,7 @@ package cz.cvut.fit.onlinestore.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.cvut.fit.onlinestore.dao.dto.OrderDescriptionDTO;
-import cz.cvut.fit.onlinestore.dao.dto.ProductCountDTO;
+import cz.cvut.fit.onlinestore.dao.dto.OrderProductsDTO;
 import cz.cvut.fit.onlinestore.dao.entity.Orders;
 import cz.cvut.fit.onlinestore.dao.entity.Product;
 import cz.cvut.fit.onlinestore.dao.entity.Users;
@@ -68,7 +68,7 @@ public class OrdersService {
         return ordersRepository.save(newOrder);
     }
 
-    private String convertProductCountListToJson(List<ProductCountDTO> productCounts) {
+    private String convertProductCountListToJson(List<OrderProductsDTO> productCounts) {
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.writeValueAsString(productCounts);

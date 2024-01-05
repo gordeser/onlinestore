@@ -51,7 +51,7 @@ public class CommentService {
 
     @Modifying
     public CommentDescriptionDTO addCommentByProductId(Long id, CommentAddDTO comment) {
-        Optional<Users> user = usersRepository.findByEmail(comment.email());
+        Optional<Users> user = usersRepository.findByEmail(comment.userEmail());
         Optional<Product> product = productRepository.findById(id);
 
         if (user.isEmpty()) {

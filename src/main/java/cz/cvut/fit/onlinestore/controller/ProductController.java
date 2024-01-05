@@ -18,7 +18,11 @@ public class ProductController {
 
     @GetMapping("/api/products")
     public ResponseEntity<List<ProductDescriptionDTO>> getAllProducts(@RequestParam(value = "category", required = false) String category) {
-        return ResponseEntity.ok(productService.getAllProducts(category));
+        try {
+            return ResponseEntity.ok(productService.getAllProducts(category));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @GetMapping("/api/products/{id}")

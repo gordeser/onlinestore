@@ -35,7 +35,7 @@ public class UsersController {
         try {
             Users user = usersService.signupUser(userSignup);
             return ResponseEntity.ok(user);
-        } catch (UserWithThatEmailDoesNotExistException e) {
+        } catch (UserWithThatEmailAlreadyExistsException e) {
             System.out.println("ERROR: " + e);
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {

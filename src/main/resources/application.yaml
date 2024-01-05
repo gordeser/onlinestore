@@ -4,3 +4,7 @@ spring:
     password: onlineshop
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/onlineshop
+
+onlinestore:
+  openapi:
+    dev-url: http://localhost:8080

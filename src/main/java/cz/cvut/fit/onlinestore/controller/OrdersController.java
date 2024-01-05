@@ -49,9 +49,9 @@ public class OrdersController {
         }
     }
     @PostMapping("/api/orders")
-    public ResponseEntity<List<Orders>> getUserOrders(@RequestBody String userEmail) {
+    public ResponseEntity<List<Orders>> getUserOrders(@RequestBody UsersEmailDTO user) {
         try {
-            List<Orders> userOrders = ordersService.getUserOrders(userEmail);
+            List<Orders> userOrders = ordersService.getUserOrders(user.userEmail());
             return ResponseEntity.ok(userOrders);
         } catch (UserWithThatEmailDoesNotExistException e) {
             System.out.println("ERROR: " + e);

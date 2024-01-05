@@ -38,6 +38,17 @@ public class OrdersService {
 
         return order.get();
     }
+
+    public List<Orders> getUserOrders(String userEmail) {
+        Optional<Users> user = usersRepository.findByEmail(userEmail);
+        
+        if (user.isEmpty()) {
+            throw new UserWithThatEmailDoesNotExistException();
+        }
+
+        return ordersRepository.getOrdersByOrderedUsers(user.get());
+    }
+
     public Orders createOrder(OrderDescriptionDTO orderDescription) {
         Optional<Users> user = usersRepository.findByEmail(orderDescription.userEmail());
         if (user.isEmpty()) {

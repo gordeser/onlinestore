@@ -4,8 +4,8 @@ import cz.cvut.fit.onlinestore.dao.dto.UsersLoginDTO;
 import cz.cvut.fit.onlinestore.dao.dto.UsersSignupDTO;
 import cz.cvut.fit.onlinestore.dao.entity.Users;
 import cz.cvut.fit.onlinestore.dao.repository.UsersRepository;
+import cz.cvut.fit.onlinestore.service.exceptions.UserWithThatEmailAlreadyExistsException;
 import cz.cvut.fit.onlinestore.service.exceptions.UserWithThatEmailDoesNotExistException;
-import cz.cvut.fit.onlinestore.service.exceptions.UserWithThatEmailIsAlreadySignedUpException;
 import cz.cvut.fit.onlinestore.service.exceptions.WrongPasswordException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -35,7 +35,7 @@ public class UsersService {
     @Modifying
     public Users signupUser(UsersSignupDTO userSignup) {
         if (usersRepository.findByEmail(userSignup.email()).isPresent()) {
-            throw new UserWithThatEmailIsAlreadySignedUpException();
+            throw new UserWithThatEmailAlreadyExistsException();
         }
 
         Users newUser = new Users();

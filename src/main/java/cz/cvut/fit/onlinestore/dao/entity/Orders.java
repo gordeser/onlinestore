@@ -28,7 +28,7 @@ public class Orders {
     private Users orderedUsers;
     @ManyToMany(mappedBy = "orders")
     @JsonIgnore
-    private Set<Product> products;
+    private Set<Product> product;
     @Column(columnDefinition = "CLOB")
     private String productsQuantities;
 }

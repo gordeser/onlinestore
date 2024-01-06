@@ -2,7 +2,9 @@ package cz.cvut.fit.onlinestore.controller;
 
 import cz.cvut.fit.onlinestore.dao.dto.CommentAddDTO;
 import cz.cvut.fit.onlinestore.dao.dto.CommentDescriptionDTO;
+import cz.cvut.fit.onlinestore.dao.dto.CommentUpdateDTO;
 import cz.cvut.fit.onlinestore.service.CommentService;
+import cz.cvut.fit.onlinestore.service.exceptions.CommentWithThatIdDoesNotExistException;
 import cz.cvut.fit.onlinestore.service.exceptions.ProductWithThatIdDoesNotExistException;
 import cz.cvut.fit.onlinestore.service.exceptions.UserWithThatEmailDoesNotExistException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -65,6 +67,48 @@ public class CommentController {
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {
             System.out.println("ERROR: " + e);
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping("/api/product/{productId}/comment/{commentId}")
+    public ResponseEntity<CommentDescriptionDTO> getProductIdCommentById(@PathVariable Long productId, @PathVariable Long commentId) {
+        try {
+            return ResponseEntity.ok(commentService.getProductIdCommentById(productId, commentId));
+        } catch (ProductWithThatIdDoesNotExistException e) {
+            return ResponseEntity.notFound().build();
+        } catch (CommentWithThatIdDoesNotExistException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @DeleteMapping("/api/product/{productId}/comment/{commentId}")
+    public ResponseEntity<Void> deleteProductIdCommentById(@PathVariable Long productId, @PathVariable Long commentId) {
+        try {
+            commentService.deleteProductIdCommentById(productId, commentId);
+            return ResponseEntity.noContent().build();
+        } catch (ProductWithThatIdDoesNotExistException e) {
+            return ResponseEntity.notFound().build();
+        } catch (CommentWithThatIdDoesNotExistException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @PutMapping("/api/product/{productId}/comment/{commentId}")
+    public ResponseEntity<CommentUpdateDTO> updateProductIdCommentById(
+            @PathVariable Long productId,
+            @PathVariable Long commentId, @RequestBody CommentUpdateDTO commentUpdate) {
+        try {
+            return ResponseEntity.ok(commentService.updateProductIdCommentById(productId, commentId, commentUpdate));
+        } catch (ProductWithThatIdDoesNotExistException e) {
+            return ResponseEntity.notFound().build();
+        } catch (CommentWithThatIdDoesNotExistException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
     }

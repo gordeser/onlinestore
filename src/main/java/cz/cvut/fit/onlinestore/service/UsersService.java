@@ -54,7 +54,7 @@ public class UsersService {
     }
 
     public Users getUserById(Long id) {
-        Optional<Users> user = usersRepository.findUsersById(id);
+        Optional<Users> user = usersRepository.findById(id);
 
         if (user.isEmpty()) {
             throw new UserWithThatIdDoesNotExistException();

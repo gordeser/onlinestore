@@ -65,6 +65,16 @@ public class UsersService {
 
     @Transactional
     public UsersDescriptionDTO updateUserById(Long id, UsersDescriptionDTO userUpdate) {
+
+        if (!usersRepository.existsById(id)) {
+            throw new UserWithThatIdDoesNotExistException();
+        }
+
+        Optional<Users> user = usersRepository.findByEmail(userUpdate.email());
+        if (user.isPresent() && !user.get().getId().equals(id) && user.get().getEmail().equals(userUpdate.email())) {
+            throw new UserWithThatEmailAlreadyExistsException();
+        }
+
         int updatedCount = usersRepository.updateUser(
                 id,
                 userUpdate.name(),

@@ -4,6 +4,7 @@ import cz.cvut.fit.onlinestore.dao.dto.CommentAddDTO;
 import cz.cvut.fit.onlinestore.dao.dto.CommentDescriptionDTO;
 import cz.cvut.fit.onlinestore.dao.dto.CommentUpdateDTO;
 import cz.cvut.fit.onlinestore.service.CommentService;
+import cz.cvut.fit.onlinestore.service.exceptions.CommentDoesNotBelongToThatProductException;
 import cz.cvut.fit.onlinestore.service.exceptions.CommentWithThatIdDoesNotExistException;
 import cz.cvut.fit.onlinestore.service.exceptions.ProductWithThatIdDoesNotExistException;
 import cz.cvut.fit.onlinestore.service.exceptions.UserWithThatEmailDoesNotExistException;
@@ -77,7 +78,7 @@ public class CommentController {
             return ResponseEntity.ok(commentService.getProductIdCommentById(productId, commentId));
         } catch (ProductWithThatIdDoesNotExistException e) {
             return ResponseEntity.notFound().build();
-        } catch (CommentWithThatIdDoesNotExistException e) {
+        } catch (CommentWithThatIdDoesNotExistException | CommentDoesNotBelongToThatProductException e) {
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
@@ -91,7 +92,7 @@ public class CommentController {
             return ResponseEntity.noContent().build();
         } catch (ProductWithThatIdDoesNotExistException e) {
             return ResponseEntity.notFound().build();
-        } catch (CommentWithThatIdDoesNotExistException e) {
+        } catch (CommentWithThatIdDoesNotExistException | CommentDoesNotBelongToThatProductException e) {
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
@@ -106,7 +107,7 @@ public class CommentController {
             return ResponseEntity.ok(commentService.updateProductIdCommentById(productId, commentId, commentUpdate));
         } catch (ProductWithThatIdDoesNotExistException e) {
             return ResponseEntity.notFound().build();
-        } catch (CommentWithThatIdDoesNotExistException e) {
+        } catch (CommentWithThatIdDoesNotExistException | CommentDoesNotBelongToThatProductException e) {
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();

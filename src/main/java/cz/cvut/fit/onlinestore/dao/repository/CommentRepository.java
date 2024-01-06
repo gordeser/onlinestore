@@ -24,4 +24,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Modifying
     @Query("UPDATE Comment c SET c.text = :text, c.date = :date WHERE c.id = :id")
     int updateComment(Long id, String text, LocalDateTime date);
+
+    @Query("SELECT c FROM Comment c WHERE c.product.id = :productId AND c.id = :commentId")
+    Optional<Comment> getCommentByIdAndProductId(Long commentId, Long productId);
 }

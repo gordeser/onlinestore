@@ -10,6 +10,7 @@ import cz.cvut.fit.onlinestore.dao.entity.Users;
 import cz.cvut.fit.onlinestore.dao.repository.CommentRepository;
 import cz.cvut.fit.onlinestore.dao.repository.ProductRepository;
 import cz.cvut.fit.onlinestore.dao.repository.UsersRepository;
+import cz.cvut.fit.onlinestore.service.exceptions.CommentDoesNotBelongToThatProductException;
 import cz.cvut.fit.onlinestore.service.exceptions.CommentWithThatIdDoesNotExistException;
 import cz.cvut.fit.onlinestore.service.exceptions.ProductWithThatIdDoesNotExistException;
 import cz.cvut.fit.onlinestore.service.exceptions.UserWithThatEmailDoesNotExistException;
@@ -93,6 +94,12 @@ public class CommentService {
             throw new CommentWithThatIdDoesNotExistException();
         }
 
+        Optional<Comment> commentCheck = commentRepository.getCommentByIdAndProductId(commentId, productId);
+
+        if (commentCheck.isEmpty()) {
+            throw new CommentDoesNotBelongToThatProductException();
+        }
+
         return new CommentDescriptionDTO(
                 comment.get().getId(),
                 comment.get().getText(),
@@ -115,6 +122,12 @@ public class CommentService {
             throw new CommentWithThatIdDoesNotExistException();
         }
 
+        Optional<Comment> commentCheck = commentRepository.getCommentByIdAndProductId(commentId, productId);
+
+        if (commentCheck.isEmpty()) {
+            throw new CommentDoesNotBelongToThatProductException();
+        }
+
         commentRepository.deleteById(commentId);
     }
 
@@ -122,6 +135,12 @@ public class CommentService {
     public CommentUpdateDTO updateProductIdCommentById(Long productId, Long commentId, CommentUpdateDTO commentUpdate) {
         if (!productRepository.existsById(productId)) {
             throw new ProductWithThatIdDoesNotExistException();
+        }
+
+        Optional<Comment> commentCheck = commentRepository.getCommentByIdAndProductId(commentId, productId);
+
+        if (commentCheck.isEmpty()) {
+            throw new CommentDoesNotBelongToThatProductException();
         }
 
         int updatedCount = commentRepository.updateComment(

@@ -1,5 +1,6 @@
 package cz.cvut.fit.onlinestore.dao.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,5 +27,6 @@ public class Product {
     @JoinTable(name = "product_orders",
             joinColumns = @JoinColumn(referencedColumnName = "id_product"),
             inverseJoinColumns = @JoinColumn(referencedColumnName = "id_orders"))
+    @JsonIgnore
     private Set<Orders> orders;
 }

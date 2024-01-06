@@ -31,7 +31,7 @@ public class OrdersService {
     private final UsersRepository usersRepository;
 
     public Orders getOrderById(Long id) {
-        Optional<Orders> order = ordersRepository.getOrdersById(id);
+        Optional<Orders> order = ordersRepository.findById(id);
 
         if (order.isEmpty()) {
             throw new OrderWithThatIdDoesNotExistException();
@@ -74,7 +74,7 @@ public class OrdersService {
             throw new OrderWithThatIdDoesNotExistException();
         }
 
-        return ordersRepository.getOrdersById(id).orElseThrow(OrderWithThatIdDoesNotExistException::new);
+        return ordersRepository.findById(id).orElseThrow(OrderWithThatIdDoesNotExistException::new);
     }
 
     public Orders createOrder(OrdersDescriptionDTO orderDescription) {

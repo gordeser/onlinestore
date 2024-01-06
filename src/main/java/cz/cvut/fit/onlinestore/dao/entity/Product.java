@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -22,10 +21,10 @@ public class Product {
     private String category;
     private String image;
     @OneToMany(mappedBy = "product")
-    private Set<Comment> comments = new HashSet<>();
+    private Set<Comment> comments;
     @ManyToMany
     @JoinTable(name = "product_orders",
             joinColumns = @JoinColumn(referencedColumnName = "id_product"),
             inverseJoinColumns = @JoinColumn(referencedColumnName = "id_orders"))
-    private Set<Orders> orders = new HashSet<>();
+    private Set<Orders> orders;
 }

@@ -63,6 +63,7 @@ public class UsersService {
         return user.get();
     }
 
+    @Transactional
     public UsersDescriptionDTO updateUserById(Long id, UsersDescriptionDTO userUpdate) {
         int updatedCount = usersRepository.updateUser(
                 id,

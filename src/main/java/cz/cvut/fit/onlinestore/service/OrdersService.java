@@ -48,8 +48,7 @@ public class OrdersService {
 
         return ordersRepository.getOrdersByOrderedUsers(user.get());
     }
-
-    @Modifying
+    
     public Orders createOrder(OrderDescriptionDTO orderDescription) {
         Optional<Users> user = usersRepository.findByEmail(orderDescription.userEmail());
         if (user.isEmpty()) {

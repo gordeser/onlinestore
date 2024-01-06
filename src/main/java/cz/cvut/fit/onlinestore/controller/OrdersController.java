@@ -1,6 +1,7 @@
 package cz.cvut.fit.onlinestore.controller;
 
-import cz.cvut.fit.onlinestore.dao.dto.OrderDescriptionDTO;
+import cz.cvut.fit.onlinestore.dao.dto.OrdersDescriptionDTO;
+import cz.cvut.fit.onlinestore.dao.dto.OrdersUpdateDTO;
 import cz.cvut.fit.onlinestore.dao.dto.UsersEmailDTO;
 import cz.cvut.fit.onlinestore.dao.entity.Orders;
 import cz.cvut.fit.onlinestore.service.OrdersService;
@@ -53,7 +54,7 @@ public class OrdersController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = { @Content(schema = @Schema())})
     })
     @PutMapping("/api/orders")
-    public ResponseEntity<Orders> createOrder(@RequestBody OrderDescriptionDTO orderDescription) {
+    public ResponseEntity<Orders> createOrder(@RequestBody OrdersDescriptionDTO orderDescription) {
         try {
             Orders newOrder = ordersService.createOrder(orderDescription);
             return ResponseEntity.ok(newOrder);
@@ -62,6 +63,38 @@ public class OrdersController {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
             System.out.println("ERROR: " + e);
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping("/api/orders")
+    public ResponseEntity<List<Orders>> getAllOrders() {
+        try {
+            return ResponseEntity.ok(ordersService.getAllOrders());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @PutMapping("/api/orders/{id}")
+    public ResponseEntity<Orders> updateOrderById(@PathVariable Long id, OrdersUpdateDTO orderUpdate) {
+        try {
+            return ResponseEntity.ok(ordersService.updateOrderById(id, orderUpdate));
+        } catch (OrderWithThatIdDoesNotExistException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @DeleteMapping("/api/orders/{id}")
+    public ResponseEntity<Void> deleteOrderById(@PathVariable Long id) {
+        try {
+            ordersService.deleteOrderById(id);
+            return ResponseEntity.noContent().build();
+        } catch (OrderWithThatIdDoesNotExistException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
     }

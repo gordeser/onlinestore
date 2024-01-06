@@ -2,8 +2,9 @@ package cz.cvut.fit.onlinestore.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.cvut.fit.onlinestore.dao.dto.OrderDescriptionDTO;
-import cz.cvut.fit.onlinestore.dao.dto.OrderProductsDTO;
+import cz.cvut.fit.onlinestore.dao.dto.OrdersDescriptionDTO;
+import cz.cvut.fit.onlinestore.dao.dto.OrdersProductsDTO;
+import cz.cvut.fit.onlinestore.dao.dto.OrdersUpdateDTO;
 import cz.cvut.fit.onlinestore.dao.entity.Orders;
 import cz.cvut.fit.onlinestore.dao.entity.Product;
 import cz.cvut.fit.onlinestore.dao.entity.Users;
@@ -13,8 +14,8 @@ import cz.cvut.fit.onlinestore.dao.repository.UsersRepository;
 import cz.cvut.fit.onlinestore.service.exceptions.OrderWithThatIdDoesNotExistException;
 import cz.cvut.fit.onlinestore.service.exceptions.ProductWithThatIdDoesNotExistException;
 import cz.cvut.fit.onlinestore.service.exceptions.UserWithThatEmailDoesNotExistException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -48,8 +49,37 @@ public class OrdersService {
 
         return ordersRepository.getOrdersByOrderedUsers(user.get());
     }
-    
-    public Orders createOrder(OrderDescriptionDTO orderDescription) {
+
+    public List<Orders> getAllOrders() {
+        return ordersRepository.findAll();
+    }
+
+    @Transactional
+    public void deleteOrderById(Long id) {
+        if (ordersRepository.existsById(id)) {
+            ordersRepository.deleteById(id);
+        } else {
+            throw new OrderWithThatIdDoesNotExistException();
+        }
+    }
+
+    public Orders updateOrderById(Long id, OrdersUpdateDTO orderUpdate) {
+        int updatedCount = ordersRepository.updateOrder(
+                id,
+                orderUpdate.date(),
+                orderUpdate.status(),
+                orderUpdate.orderedUsers(),
+                orderUpdate.productQuantities()
+        );
+
+        if (updatedCount == 0) {
+            throw new OrderWithThatIdDoesNotExistException();
+        }
+
+        return ordersRepository.getOrdersById(id).orElseThrow(OrderWithThatIdDoesNotExistException::new);
+    }
+
+    public Orders createOrder(OrdersDescriptionDTO orderDescription) {
         Optional<Users> user = usersRepository.findByEmail(orderDescription.userEmail());
         if (user.isEmpty()) {
             throw new UserWithThatEmailDoesNotExistException();
@@ -69,7 +99,7 @@ public class OrdersService {
         return ordersRepository.save(newOrder);
     }
 
-    private String convertProductCountListToJson(List<OrderProductsDTO> productCounts) {
+    private String convertProductCountListToJson(List<OrdersProductsDTO> productCounts) {
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.writeValueAsString(productCounts);

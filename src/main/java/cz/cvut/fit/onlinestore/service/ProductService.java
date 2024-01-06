@@ -1,9 +1,12 @@
 package cz.cvut.fit.onlinestore.service;
 
+import cz.cvut.fit.onlinestore.dao.dto.ProductAddDTO;
 import cz.cvut.fit.onlinestore.dao.dto.ProductDescriptionDTO;
+import cz.cvut.fit.onlinestore.dao.entity.Product;
 import cz.cvut.fit.onlinestore.dao.repository.ProductRepository;
 import cz.cvut.fit.onlinestore.service.exceptions.ProductWithThatIdDoesNotExistException;
 import jakarta.persistence.Tuple;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -48,5 +51,41 @@ public class ProductService {
         String image = product.get().get(4, String.class);
 
         return new ProductDescriptionDTO(id, name, description, price, category, image);
+    }
+
+    public Product createProduct(ProductAddDTO product) {
+        Product newProduct = new Product();
+        newProduct.setName(product.name());
+        newProduct.setDescription(product.description());
+        newProduct.setPrice(product.price());
+        newProduct.setCategory(product.category());
+        newProduct.setImage(product.image());
+        return productRepository.save(newProduct);
+    }
+
+    @Transactional
+    public void deleteProductById(Long id) {
+        if (productRepository.existsById(id)) {
+            productRepository.deleteById(id);
+        } else {
+            throw new ProductWithThatIdDoesNotExistException();
+        }
+    }
+
+    public ProductDescriptionDTO updateProductById(Long id, ProductDescriptionDTO productUpdate) {
+        int updatedCount = productRepository.updateProduct(
+                id,
+                productUpdate.name(),
+                productUpdate.description(),
+                productUpdate.price(),
+                productUpdate.category(),
+                productUpdate.image()
+        );
+
+        if (updatedCount == 0) {
+            throw new ProductWithThatIdDoesNotExistException();
+        }
+
+        return productUpdate;
     }
 }

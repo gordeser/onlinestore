@@ -14,6 +14,7 @@ import cz.cvut.fit.onlinestore.service.exceptions.OrderWithThatIdDoesNotExistExc
 import cz.cvut.fit.onlinestore.service.exceptions.ProductWithThatIdDoesNotExistException;
 import cz.cvut.fit.onlinestore.service.exceptions.UserWithThatEmailDoesNotExistException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -48,6 +49,7 @@ public class OrdersService {
         return ordersRepository.getOrdersByOrderedUsers(user.get());
     }
 
+    @Modifying
     public Orders createOrder(OrderDescriptionDTO orderDescription) {
         Optional<Users> user = usersRepository.findByEmail(orderDescription.userEmail());
         if (user.isEmpty()) {

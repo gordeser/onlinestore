@@ -67,9 +67,7 @@ public class OrdersService {
         int updatedCount = ordersRepository.updateOrder(
                 id,
                 orderUpdate.date(),
-                orderUpdate.status(),
-                orderUpdate.orderedUsers(),
-                orderUpdate.productQuantities()
+                orderUpdate.status()
         );
 
         if (updatedCount == 0) {
@@ -94,7 +92,7 @@ public class OrdersService {
 
         Orders newOrder = new Orders();
         newOrder.setOrderedUsers(user.get());
-        newOrder.setProducts(productSet);
+        newOrder.setProduct(productSet);
         newOrder.setProductsQuantities(quantitiesJson);
         return ordersRepository.save(newOrder);
     }

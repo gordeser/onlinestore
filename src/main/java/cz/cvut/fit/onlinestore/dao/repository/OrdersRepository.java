@@ -23,6 +23,6 @@ public interface OrdersRepository extends JpaRepository<Orders, Long> {
 
     @Transactional
     @Modifying
-    @Query("UPDATE Orders o SET o.date = :date, o.status = :status, o.orderedUsers = :orderedUsers, o.productsQuantities = :productQuantities WHERE o.id = :id")
-    int updateOrder(Long id, LocalDateTime date, OrderStatus status, Users orderedUsers, String productQuantities);
+    @Query("UPDATE Orders o SET o.date = :date, o.status = :status WHERE o.id = :id")
+    int updateOrder(Long id, LocalDateTime date, OrderStatus status);
 }

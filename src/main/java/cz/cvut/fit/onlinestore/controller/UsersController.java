@@ -71,6 +71,8 @@ public class UsersController {
     public ResponseEntity<UsersDescriptionDTO> updateUserById(@PathVariable Long id, @RequestBody UsersDescriptionDTO userUpdate) {
         try {
             return ResponseEntity.ok(usersService.updateUserById(id, userUpdate));
+        } catch (UserWithThatEmailAlreadyExistsException e) {
+            return ResponseEntity.badRequest().build();
         } catch (UserWithThatIdDoesNotExistException e) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {

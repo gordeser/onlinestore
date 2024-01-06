@@ -82,7 +82,7 @@ public class ProductController {
     }
 
     @PutMapping("/api/proudct/{id}")
-    public ResponseEntity<ProductDescriptionDTO> updateProduct(@PathVariable Long id, @RequestBody ProductDescriptionDTO productUpdate) {
+    public ResponseEntity<ProductAddDTO> updateProduct(@PathVariable Long id, @RequestBody ProductAddDTO productUpdate) {
         try {
             return ResponseEntity.ok(productService.updateProductById(id, productUpdate));
         } catch (ProductWithThatIdDoesNotExistException e) {

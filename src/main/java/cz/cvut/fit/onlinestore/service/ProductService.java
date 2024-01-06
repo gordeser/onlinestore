@@ -72,6 +72,7 @@ public class ProductService {
         }
     }
 
+    @Transactional
     public ProductDescriptionDTO updateProductById(Long id, ProductDescriptionDTO productUpdate) {
         int updatedCount = productRepository.updateProduct(
                 id,

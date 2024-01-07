@@ -18,12 +18,9 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     public List<Product> getAllProducts(String category) {
-        List<Product> products = (category != null && !category.isEmpty())
+        return (category != null && !category.isEmpty())
                 ? productRepository.getAllProductsWithCategory(category)
                 : productRepository.findAll();
-
-
-        return products;
     }
 
     public Product getProductById(Long productId) {

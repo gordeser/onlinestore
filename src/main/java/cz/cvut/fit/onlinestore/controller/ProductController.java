@@ -24,7 +24,7 @@ import java.util.List;
 public class ProductController {
     private final ProductService productService;
 
-    @Operation(summary = "Get all store products")
+    @Operation(summary = "Get store products (with category)")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successful operation", content = { @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Product.class)))}),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content(schema = @Schema())})

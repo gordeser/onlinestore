@@ -90,6 +90,7 @@ public class OrdersController {
     @Operation(summary = "Update order by its id")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successful operation", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Orders.class))}),
+            @ApiResponse(responseCode = "400", description = "Invalid new order status", content = { @Content(schema = @Schema())}),
             @ApiResponse(responseCode = "404", description = "Order with that id does not exist", content = { @Content(schema = @Schema())}),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = { @Content(schema = @Schema())})
     })

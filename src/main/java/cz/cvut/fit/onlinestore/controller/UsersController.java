@@ -2,7 +2,6 @@ package cz.cvut.fit.onlinestore.controller;
 
 import cz.cvut.fit.onlinestore.dao.dto.UsersLoginDTO;
 import cz.cvut.fit.onlinestore.dao.dto.UsersDescriptionDTO;
-import cz.cvut.fit.onlinestore.dao.entity.Product;
 import cz.cvut.fit.onlinestore.dao.entity.Users;
 import cz.cvut.fit.onlinestore.service.UsersService;
 import cz.cvut.fit.onlinestore.service.exceptions.UserWithThatEmailAlreadyExistsException;
@@ -16,7 +15,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.models.annotations.OpenAPI30;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,8 +37,7 @@ public class UsersController {
     @PostMapping("/api/users/login")
     public ResponseEntity<Users> getUserUsingCredentials(@RequestBody UsersLoginDTO userLogin) {
         try {
-            Users user = usersService.authUser(userLogin);
-            return ResponseEntity.ok(user);
+            return ResponseEntity.ok(usersService.authUser(userLogin));
         } catch (UserWithThatEmailDoesNotExistException | WrongPasswordException e) {
             System.out.println("ERROR: " + e);
             return ResponseEntity.notFound().build();
@@ -86,7 +83,7 @@ public class UsersController {
             @ApiResponse(responseCode = "200", description = "Successful operation", content = {@Content(schema = @Schema(implementation = Users.class))}),
             @ApiResponse(responseCode = "400", description = "User with that email already exists", content = {@Content(schema = @Schema())}),
             @ApiResponse(responseCode = "404", description = "User with that id does not exist", content = {@Content(schema = @Schema())}),
-            @ApiResponse(responseCode = "500", description = "Internal Server Error")
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content(schema = @Schema())})
     })
     @PutMapping("/api/users/{id}")
     public ResponseEntity<Users> updateUserById(@PathVariable Long id, @RequestBody UsersDescriptionDTO userUpdate) {
@@ -128,8 +125,7 @@ public class UsersController {
     @PostMapping("/api/users/signup")
     public ResponseEntity<Users> signupUser(@RequestBody UsersDescriptionDTO userSignup) {
         try {
-            Users user = usersService.signupUser(userSignup);
-            return ResponseEntity.ok(user);
+            return ResponseEntity.ok(usersService.signupUser(userSignup));
         } catch (UserWithThatEmailAlreadyExistsException e) {
             System.out.println("ERROR: " + e);
             return ResponseEntity.badRequest().build();

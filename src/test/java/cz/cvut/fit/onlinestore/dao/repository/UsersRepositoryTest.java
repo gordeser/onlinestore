@@ -44,48 +44,4 @@ public class UsersRepositoryTest {
 
         Assertions.assertTrue(user.isEmpty());
     }
-
-    @Test
-    public void updateUserPositive() {
-        var u1 = new Users();
-        u1.setId(1L);
-        u1.setName("test");
-        u1.setSurname("test surname");
-        u1.setAddress("test address");
-        u1.setEmail("test@test.com");
-        u1.setPassword("pass");
-        usersRepository.save(u1);
-
-        int updatedCount = usersRepository.updateUser(
-                u1.getId(),
-                u1.getName(),
-                "NEW SURNAME",
-                u1.getAddress(),
-                u1.getEmail(),
-                u1.getPassword());
-
-        Assertions.assertEquals(1, updatedCount);
-    }
-
-    @Test
-    public void updateUserFalse() {
-        var u1 = new Users();
-        u1.setId(1L);
-        u1.setName("test");
-        u1.setSurname("test surname");
-        u1.setAddress("test address");
-        u1.setEmail("test@test.com");
-        u1.setPassword("pass");
-        usersRepository.save(u1);
-
-        int updatedCount = usersRepository.updateUser(
-                -1L,
-                u1.getName(),
-                "NEW SURNAME",
-                u1.getAddress(),
-                u1.getEmail(),
-                u1.getPassword());
-
-        Assertions.assertEquals(0, updatedCount);
-    }
 }

@@ -30,8 +30,32 @@ public class OrdersService {
     private final ProductRepository productRepository;
     private final UsersRepository usersRepository;
 
-    public Orders getOrderById(Long id) {
-        Optional<Orders> order = ordersRepository.findById(id);
+    public void addProductToOrder(Long productId, Long orderId) {
+        Orders order = ordersRepository.findById(orderId).orElseThrow(OrderWithThatIdDoesNotExistException::new);
+        Product product = productRepository.findById(productId).orElseThrow(ProductWithThatIdDoesNotExistException::new);
+
+        order.getProduct().add(product);
+        ordersRepository.save(order);
+    }
+
+    public Set<Product> getProductsByOrderId(Long orderId) {
+        Orders order = ordersRepository.findById(orderId).orElseThrow(OrderWithThatIdDoesNotExistException::new);
+        return order.getProduct();
+    }
+
+    public void removeProductFromOrder(Long orderId, Long productId) {
+        Orders order = ordersRepository.findById(orderId).orElseThrow(OrderWithThatIdDoesNotExistException::new);
+        order.setProduct(
+                order.getProduct().stream()
+                        .filter(product -> !product.getId().equals(productId))
+                        .collect(Collectors.toSet())
+        );
+        ordersRepository.save(order);
+    }
+
+
+    public Orders getOrderById(Long orderId) {
+        Optional<Orders> order = ordersRepository.findById(orderId);
 
         if (order.isEmpty()) {
             throw new OrderWithThatIdDoesNotExistException();
@@ -55,26 +79,26 @@ public class OrdersService {
     }
 
     @Transactional
-    public void deleteOrderById(Long id) {
-        if (ordersRepository.existsById(id)) {
-            ordersRepository.deleteById(id);
+    public void deleteOrderById(Long orderId) {
+        if (ordersRepository.existsById(orderId)) {
+            ordersRepository.deleteById(orderId);
         } else {
             throw new OrderWithThatIdDoesNotExistException();
         }
     }
 
-    public Orders updateOrderById(Long id, OrdersUpdateDTO orderUpdate) {
-        int updatedCount = ordersRepository.updateOrder(
-                id,
-                orderUpdate.date(),
-                orderUpdate.status()
-        );
+    public Orders updateOrderById(Long orderId, OrdersUpdateDTO orderUpdate) {
+        Optional<Orders> order = ordersRepository.findById(orderId);
 
-        if (updatedCount == 0) {
+        if (order.isEmpty()) {
             throw new OrderWithThatIdDoesNotExistException();
         }
 
-        return ordersRepository.findById(id).orElseThrow(OrderWithThatIdDoesNotExistException::new);
+        Orders updatedOrder = order.get();
+        updatedOrder.setDate(updatedOrder.getDate());
+        updatedOrder.setStatus(orderUpdate.status());
+
+        return ordersRepository.save(updatedOrder);
     }
 
     public Orders createOrder(OrdersDescriptionDTO orderDescription) {
@@ -94,6 +118,11 @@ public class OrdersService {
         newOrder.setOrderedUsers(user.get());
         newOrder.setProduct(productSet);
         newOrder.setProductsQuantities(quantitiesJson);
+
+        for (Product p : productSet) {
+            p.getOrders().add(newOrder);
+        }
+
         return ordersRepository.save(newOrder);
     }
 

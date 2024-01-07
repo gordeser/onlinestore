@@ -1,18 +1,15 @@
 package cz.cvut.fit.onlinestore.service;
 
 import cz.cvut.fit.onlinestore.dao.dto.ProductAddDTO;
-import cz.cvut.fit.onlinestore.dao.dto.ProductDescriptionDTO;
 import cz.cvut.fit.onlinestore.dao.entity.Product;
 import cz.cvut.fit.onlinestore.dao.repository.ProductRepository;
 import cz.cvut.fit.onlinestore.service.exceptions.ProductWithThatIdDoesNotExistException;
-import jakarta.persistence.Tuple;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,37 +17,23 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
-    public List<ProductDescriptionDTO> getAllProducts(String category) {
-        List<Tuple> products = (category != null && !category.isEmpty())
+    public List<Product> getAllProducts(String category) {
+        List<Product> products = (category != null && !category.isEmpty())
                 ? productRepository.getAllProductsWithCategory(category)
-                : productRepository.getAllProducts();
+                : productRepository.findAll();
 
-        return products.stream()
-                .map(product -> new ProductDescriptionDTO(
-                        product.get(0, Long.class),
-                        product.get(1, String.class),
-                        product.get(2, String.class),
-                        product.get(3, Double.class),
-                        product.get(4, String.class),
-                        product.get(5, String.class)
-                ))
-                .collect(Collectors.toList());
+
+        return products;
     }
 
-    public ProductDescriptionDTO getProductById(Long id) {
-        Optional<Tuple> product = productRepository.getProductById(id);
+    public Product getProductById(Long productId) {
+        Optional<Product> product = productRepository.findById(productId);
 
         if (product.isEmpty()) {
             throw new ProductWithThatIdDoesNotExistException();
         }
 
-        String name = product.get().get(0, String.class);
-        String description = product.get().get(1, String.class);
-        Double price = product.get().get(2, Double.class);
-        String category = product.get().get(3, String.class);
-        String image = product.get().get(4, String.class);
-
-        return new ProductDescriptionDTO(id, name, description, price, category, image);
+        return product.get();
     }
 
     public Product createProduct(ProductAddDTO product) {
@@ -73,20 +56,20 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductAddDTO updateProductById(Long id, ProductAddDTO productUpdate) {
-        int updatedCount = productRepository.updateProduct(
-                id,
-                productUpdate.name(),
-                productUpdate.description(),
-                productUpdate.price(),
-                productUpdate.category(),
-                productUpdate.image()
-        );
+    public Product updateProductById(Long productId, ProductAddDTO productUpdate) {
+        Optional<Product> product = productRepository.findById(productId);
 
-        if (updatedCount == 0) {
+        if (product.isEmpty()) {
             throw new ProductWithThatIdDoesNotExistException();
         }
 
-        return productUpdate;
+        Product updatedProduct = product.get();
+        updatedProduct.setName(productUpdate.name());
+        updatedProduct.setDescription(productUpdate.description());
+        updatedProduct.setPrice(productUpdate.price());
+        updatedProduct.setCategory(productUpdate.category());
+        updatedProduct.setImage(productUpdate.image());
+
+        return productRepository.save(updatedProduct);
     }
 }

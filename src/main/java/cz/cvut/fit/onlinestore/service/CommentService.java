@@ -29,14 +29,12 @@ public class CommentService {
     private final UsersRepository usersRepository;
     private final ProductRepository productRepository;
 
-    public List<CommentDescriptionDTO> getCommentsByProductId(Long id) {
-        Optional<Product> product = productRepository.findById(id);
-
-        if (product.isEmpty()) {
+    public List<CommentDescriptionDTO> getCommentsByProductId(Long productId) {
+        if (!productRepository.existsById(productId)) {
             throw new ProductWithThatIdDoesNotExistException();
         }
 
-        List<Comment> comments = commentRepository.getAllCommentsByProductId(id);
+        List<Comment> comments = commentRepository.findAllByProductId(productId);
 
         return comments.stream()
                 .map(comment -> new CommentDescriptionDTO(
@@ -52,9 +50,9 @@ public class CommentService {
                 .collect(Collectors.toList());
     }
 
-    public CommentDescriptionDTO addCommentByProductId(Long id, CommentAddDTO comment) {
+    public CommentDescriptionDTO addCommentByProductId(Long productId, CommentAddDTO comment) {
         Optional<Users> user = usersRepository.findByEmail(comment.userEmail());
-        Optional<Product> product = productRepository.findById(id);
+        Optional<Product> product = productRepository.findById(productId);
 
         if (user.isEmpty()) {
             throw new UserWithThatEmailDoesNotExistException();
@@ -82,21 +80,17 @@ public class CommentService {
     }
 
     public CommentDescriptionDTO getProductIdCommentById(Long productId, Long commentId) {
-
         if (!productRepository.existsById(productId)) {
             throw new ProductWithThatIdDoesNotExistException();
         }
 
-
-        Optional<Comment> comment = commentRepository.getCommentById(commentId);
+        Optional<Comment> comment = commentRepository.findById(commentId);
 
         if (comment.isEmpty()) {
             throw new CommentWithThatIdDoesNotExistException();
         }
 
-        Optional<Comment> commentCheck = commentRepository.getCommentByIdAndProductId(commentId, productId);
-
-        if (commentCheck.isEmpty()) {
+        if (!comment.get().getProduct().getId().equals(productId)) {
             throw new CommentDoesNotBelongToThatProductException();
         }
 
@@ -118,13 +112,13 @@ public class CommentService {
             throw new ProductWithThatIdDoesNotExistException();
         }
 
-        if (!commentRepository.existsById(commentId)) {
+        Optional<Comment> comment = commentRepository.findById(commentId);
+
+        if (comment.isEmpty()) {
             throw new CommentWithThatIdDoesNotExistException();
         }
 
-        Optional<Comment> commentCheck = commentRepository.getCommentByIdAndProductId(commentId, productId);
-
-        if (commentCheck.isEmpty()) {
+        if (!comment.get().getProduct().getId().equals(productId)) {
             throw new CommentDoesNotBelongToThatProductException();
         }
 
@@ -132,27 +126,32 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentUpdateDTO updateProductIdCommentById(Long productId, Long commentId, CommentUpdateDTO commentUpdate) {
+    public CommentDescriptionDTO updateProductIdCommentById(Long productId, Long commentId, CommentUpdateDTO commentUpdate) {
         if (!productRepository.existsById(productId)) {
             throw new ProductWithThatIdDoesNotExistException();
         }
 
-        Optional<Comment> commentCheck = commentRepository.getCommentByIdAndProductId(commentId, productId);
+        Optional<Comment> comment = commentRepository.findById(commentId);
+        if (comment.isEmpty()) {
+            throw new CommentWithThatIdDoesNotExistException();
+        }
 
-        if (commentCheck.isEmpty()) {
+        if (!comment.get().getProduct().getId().equals(productId)) {
             throw new CommentDoesNotBelongToThatProductException();
         }
 
-        int updatedCount = commentRepository.updateComment(
-                commentId,
-                commentUpdate.text(),
-                commentUpdate.date()
-        );
+        Comment updatedComment = comment.get();
+        updatedComment.setText(commentUpdate.text());
+        updatedComment.setDate(commentUpdate.date());
+        commentRepository.save(updatedComment);
 
-        if (updatedCount == 0) {
-            throw new ProductWithThatIdDoesNotExistException();
-        }
-
-        return commentUpdate;
+        return new CommentDescriptionDTO(
+                productId,
+                updatedComment.getText(),
+                updatedComment.getDate(),
+                new UsersCommentDTO(
+                        updatedComment.getUsers().getName(),
+                        updatedComment.getUsers().getSurname(),
+                        updatedComment.getUsers().getEmail()));
     }
 }

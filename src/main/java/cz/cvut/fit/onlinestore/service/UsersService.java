@@ -53,8 +53,8 @@ public class UsersService {
         return usersRepository.findAll();
     }
 
-    public Users getUserById(Long id) {
-        Optional<Users> user = usersRepository.findById(id);
+    public Users getUserById(Long userId) {
+        Optional<Users> user = usersRepository.findById(userId);
 
         if (user.isEmpty()) {
             throw new UserWithThatIdDoesNotExistException();
@@ -64,31 +64,27 @@ public class UsersService {
     }
 
     @Transactional
-    public UsersDescriptionDTO updateUserById(Long id, UsersDescriptionDTO userUpdate) {
+    public Users updateUserById(Long userId, UsersDescriptionDTO userUpdate) {
+        Optional<Users> user = usersRepository.findById(userId);
 
-        if (!usersRepository.existsById(id)) {
+        if (user.isEmpty()) {
             throw new UserWithThatIdDoesNotExistException();
         }
 
-        Optional<Users> user = usersRepository.findByEmail(userUpdate.email());
-        if (user.isPresent() && !user.get().getId().equals(id) && user.get().getEmail().equals(userUpdate.email())) {
+        Optional<Users> checkUser = usersRepository.findByEmail(userUpdate.email());
+        // emails cannot be the same
+        if (checkUser.isPresent() && !checkUser.get().getId().equals(userId) && checkUser.get().getEmail().equals(userUpdate.email())) {
             throw new UserWithThatEmailAlreadyExistsException();
         }
 
-        int updatedCount = usersRepository.updateUser(
-                id,
-                userUpdate.name(),
-                userUpdate.surname(),
-                userUpdate.address(),
-                userUpdate.email(),
-                userUpdate.password()
-        );
+        Users updatedUser = user.get();
+        updatedUser.setName(userUpdate.name());
+        updatedUser.setSurname(updatedUser.getSurname());
+        updatedUser.setAddress(updatedUser.getAddress());
+        updatedUser.setEmail(updatedUser.getEmail());
+        updatedUser.setPassword(updatedUser.getPassword());
 
-        if (updatedCount == 0) {
-            throw new UserWithThatIdDoesNotExistException();
-        }
-
-        return userUpdate;
+        return usersRepository.save(updatedUser);
     }
 
     @Transactional

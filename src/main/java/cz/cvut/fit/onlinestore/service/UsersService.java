@@ -79,10 +79,10 @@ public class UsersService {
 
         Users updatedUser = user.get();
         updatedUser.setName(userUpdate.name());
-        updatedUser.setSurname(updatedUser.getSurname());
-        updatedUser.setAddress(updatedUser.getAddress());
-        updatedUser.setEmail(updatedUser.getEmail());
-        updatedUser.setPassword(updatedUser.getPassword());
+        updatedUser.setSurname(userUpdate.surname());
+        updatedUser.setAddress(userUpdate.address());
+        updatedUser.setEmail(userUpdate.email());
+        updatedUser.setPassword(userUpdate.password());
 
         return usersRepository.save(updatedUser);
     }

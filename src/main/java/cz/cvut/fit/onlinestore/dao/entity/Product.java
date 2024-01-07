@@ -22,6 +22,7 @@ public class Product {
     private String category;
     private String image;
     @OneToMany(mappedBy = "product")
+    @JsonIgnore
     private Set<Comment> comments;
     @ManyToMany
     @JoinTable(name = "product_orders",

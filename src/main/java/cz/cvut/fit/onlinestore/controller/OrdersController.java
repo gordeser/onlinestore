@@ -51,6 +51,7 @@ public class OrdersController {
     @Operation(summary = "Create new order")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successful operation", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Orders.class))}),
+            @ApiResponse(responseCode = "400", description = "Some of product in cart does not exist", content = { @Content(schema = @Schema())}),
             @ApiResponse(responseCode = "404", description = "User with that email does not exist", content = { @Content(schema = @Schema())}),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = { @Content(schema = @Schema())})
     })
@@ -63,6 +64,7 @@ public class OrdersController {
             System.out.println("ERROR: " + e);
             return ResponseEntity.notFound().build();
         } catch (ProductWithThatIdDoesNotExistException e) {
+            System.out.println("ERROR: " + e);
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {
             System.out.println("ERROR: " + e);
@@ -70,15 +72,27 @@ public class OrdersController {
         }
     }
 
+    @Operation(summary = "Get list of all orders")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Successful operation", content = { @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Orders.class)))}),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = { @Content(schema = @Schema())})
+    })
     @GetMapping("/api/orders")
     public ResponseEntity<List<Orders>> getAllOrders() {
         try {
             return ResponseEntity.ok(ordersService.getAllOrders());
         } catch (Exception e) {
+            System.out.println("ERROR: " + e);
             return ResponseEntity.internalServerError().build();
         }
     }
 
+    @Operation(summary = "Update order by its id")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Successful operation", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Orders.class))}),
+            @ApiResponse(responseCode = "404", description = "Order with that id does not exist", content = { @Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = { @Content(schema = @Schema())})
+    })
     @PutMapping("/api/orders/{id}")
     public ResponseEntity<Orders> updateOrderById(@PathVariable Long id, @RequestBody OrdersUpdateDTO orderUpdate) {
         try {
@@ -86,19 +100,27 @@ public class OrdersController {
         } catch (OrderWithThatIdDoesNotExistException e) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            System.out.println(e.toString());
+            System.out.println("ERROR: " + e);
             return ResponseEntity.internalServerError().build();
         }
     }
 
+    @Operation(summary = "Delete order by its id")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Successful operation", content = { @Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "404", description = "Order with that id does not exist", content = { @Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = { @Content(schema = @Schema())})
+    })
     @DeleteMapping("/api/orders/{id}")
     public ResponseEntity<Void> deleteOrderById(@PathVariable Long id) {
         try {
             ordersService.deleteOrderById(id);
             return ResponseEntity.noContent().build();
         } catch (OrderWithThatIdDoesNotExistException e) {
+            System.out.println("ERROR: " + e);
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
+            System.out.println("ERROR: " + e);
             return ResponseEntity.internalServerError().build();
         }
     }
